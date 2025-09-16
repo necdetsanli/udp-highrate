@@ -1,0 +1,15 @@
+add_executable(unit_tests
+  test_packet.cpp
+  test_stats.cpp
+  test_socket_mock.cpp
+  test_client_logic.cpp
+  test_server_logic.cpp
+)
+target_link_libraries(unit_tests
+  udp_lib
+  GTest::gtest_main
+  GTest::gtest
+  pthread
+)
+include(GoogleTest)
+gtest_discover_tests(unit_tests)
