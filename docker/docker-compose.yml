@@ -1,0 +1,22 @@
+services:
+  server:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    network_mode: host
+    restart: unless-stopped
+  prometheus:
+    image: prom/prometheus:latest
+    network_mode: host
+    volumes:
+      - ../tools/prom/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+  grafana:
+    image: grafana/grafana-oss:latest
+    network_mode: host
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-data:/var/lib/grafana
+volumes:
+  grafana-data: {}
+ 
