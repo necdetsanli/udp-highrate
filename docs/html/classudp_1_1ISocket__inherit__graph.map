@@ -1,0 +1,7 @@
+<map id="udp::ISocket" name="udp::ISocket">
+<area shape="rect" id="Node000001" title="Abstract socket interface (strategy/port)." alt="" coords="83,5,196,211"/>
+<area shape="rect" id="Node000002" href="$classudp_1_1MockSocket.html" title="In&#45;memory test double for ISocket (no real network I/O)." alt="" coords="5,259,129,524"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="112,225,104,259,99,258,107,224"/>
+<area shape="rect" id="Node000003" href="$classudp_1_1UdpSocket.html" title="UDP socket implementation using POSIX/Linux syscalls." alt="" coords="153,279,272,504"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="172,223,186,278,181,279,167,225"/>
+</map>

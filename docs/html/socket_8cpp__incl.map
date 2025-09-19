@@ -1,0 +1,31 @@
+<map id="src/socket.cpp" name="src/socket.cpp">
+<area shape="rect" id="Node000001" title="POSIX/Linux UDP socket implementation and in&#45;memory MockSocket." alt="" coords="578,5,693,31"/>
+<area shape="rect" id="Node000002" href="$socket_8hpp.html" title="Socket abstraction for high&#45;rate UDP I/O (batch send/receive) plus a test double." alt="" coords="239,79,359,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="582,33,368,78,367,73,581,28"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="384,79,476,104"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="603,33,477,77,475,72,601,28"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="501,79,567,104"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="621,33,563,73,560,68,618,28"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="592,79,679,104"/>
+<area shape="poly" id="edge11_Node000001_Node000012" title=" " alt="" coords="638,31,638,65,633,65,633,31"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="703,79,765,104"/>
+<area shape="poly" id="edge12_Node000001_Node000013" title=" " alt="" coords="653,29,708,68,705,73,650,33"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="790,79,886,104"/>
+<area shape="poly" id="edge13_Node000001_Node000014" title=" " alt="" coords="669,28,793,72,792,77,667,33"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="911,79,973,104"/>
+<area shape="poly" id="edge14_Node000001_Node000015" title=" " alt="" coords="688,28,897,76,896,81,687,33"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,152,68,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="258,107,82,154,80,149,256,101"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="93,152,151,177"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="272,106,164,149,162,144,270,102"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="175,152,242,177"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="286,106,236,145,233,141,283,102"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="266,152,333,177"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="302,104,302,138,297,138,297,104"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="357,152,453,177"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="318,102,378,142,375,147,315,106"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="477,152,580,177"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="337,101,479,145,477,150,335,107"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="605,152,679,177"/>
+<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="358,101,592,149,591,154,357,107"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="udp::MockSocket" name="udp::MockSocket">
+<area shape="rect" id="Node000001" title="In&#45;memory test double for ISocket (no real network I/O)." alt="" coords="5,259,129,524"/>
+<area shape="rect" id="Node000002" href="$classudp_1_1ISocket.html" title="Abstract socket interface (strategy/port)." alt="" coords="11,5,124,211"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="70,225,70,258,65,258,65,225"/>
+</map>

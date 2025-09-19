@@ -1,0 +1,15 @@
+<map id="include/udp/common.hpp" name="include/udp/common.hpp">
+<area shape="rect" id="Node000001" title="Common wire&#45;level types and tiny utilities for the UDP high&#45;rate demo." alt="" coords="209,5,395,31"/>
+<area shape="rect" id="Node000002" href="$client_8hpp.html" title="High&#45;rate UDP client: pacing + batch send with lightweight counters." alt="" coords="123,79,289,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="277,41,223,81,220,76,274,37"/>
+<area shape="rect" id="Node000005" href="$server_8hpp.html" title="High&#45;rate UDP server: batch receive, optional echo, runtime metrics." alt="" coords="313,79,483,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="330,37,384,76,381,81,327,41"/>
+<area shape="rect" id="Node000003" href="$client_8cpp.html" title="UdpClient implementation: paced batch sending toward a target PPS." alt="" coords="5,152,113,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="172,112,84,154,82,149,169,107"/>
+<area shape="rect" id="Node000004" href="$main__client_8cpp.html" title="UDP client entry point: parses CLI, configures UdpClient, and runs paced sending." alt="" coords="137,152,285,177"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="211,118,213,152,208,152,205,118"/>
+<area shape="rect" id="Node000006" href="$main__server_8cpp.html" title="UDP server entry point: parses CLI, starts/stops UdpServer, handles signals." alt="" coords="318,152,470,177"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="399,118,397,152,392,152,394,118"/>
+<area shape="rect" id="Node000007" href="$server_8cpp.html" title="UdpServer implementation: batch recv, optional echo, PPS accounting, and /metrics integration." alt="" coords="494,152,606,177"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="436,107,526,149,524,154,433,112"/>
+</map>

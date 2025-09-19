@@ -1,0 +1,19 @@
+<map id="include/udp/socket.hpp" name="include/udp/socket.hpp">
+<area shape="rect" id="Node000001" title="Socket abstraction for high&#45;rate UDP I/O (batch send/receive) plus a test double." alt="" coords="237,5,407,31"/>
+<area shape="rect" id="Node000002" href="$client_8hpp.html" title="High&#45;rate UDP client: pacing + batch send with lightweight counters." alt="" coords="69,79,234,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="283,38,180,81,178,76,281,33"/>
+<area shape="rect" id="Node000004" href="$main__client_8cpp.html" title="UDP client entry point: parses CLI, configures UdpClient, and runs paced sending." alt="" coords="137,152,285,177"/>
+<area shape="poly" id="edge7_Node000001_Node000004" title=" " alt="" coords="307,43,222,153,218,150,303,40"/>
+<area shape="rect" id="Node000005" href="$server_8hpp.html" title="High&#45;rate UDP server: batch receive, optional echo, runtime metrics." alt="" coords="360,79,529,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="355,35,426,76,423,81,352,40"/>
+<area shape="rect" id="Node000006" href="$main__server_8cpp.html" title="UDP server entry point: parses CLI, starts/stops UdpServer, handles signals." alt="" coords="310,152,462,177"/>
+<area shape="poly" id="edge8_Node000001_Node000006" title=" " alt="" coords="330,44,350,103,379,150,375,153,345,105,325,45"/>
+<area shape="rect" id="Node000008" href="$socket_8cpp.html" title="POSIX/Linux UDP socket implementation and in&#45;memory MockSocket." alt="" coords="554,79,669,104"/>
+<area shape="poly" id="edge9_Node000001_Node000008" title=" " alt="" coords="382,31,565,76,564,81,381,37"/>
+<area shape="rect" id="Node000003" href="$client_8cpp.html" title="UdpClient implementation: paced batch sending toward a target PPS." alt="" coords="5,152,113,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="128,114,76,154,73,150,124,110"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="172,113,204,150,200,154,168,116"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="428,116,398,154,393,150,424,113"/>
+<area shape="rect" id="Node000007" href="$server_8cpp.html" title="UdpServer implementation: batch recv, optional echo, PPS accounting, and /metrics integration." alt="" coords="486,152,598,177"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="473,110,528,150,525,154,470,114"/>
+</map>

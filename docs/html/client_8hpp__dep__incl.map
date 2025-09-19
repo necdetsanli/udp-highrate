@@ -1,0 +1,7 @@
+<map id="include/udp/client.hpp" name="include/udp/client.hpp">
+<area shape="rect" id="Node000001" title="High&#45;rate UDP client: pacing + batch send with lightweight counters." alt="" coords="53,5,218,31"/>
+<area shape="rect" id="Node000002" href="$client_8cpp.html" title="UdpClient implementation: paced batch sending toward a target PPS." alt="" coords="5,79,113,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="115,42,74,80,70,76,111,38"/>
+<area shape="rect" id="Node000003" href="$main__client_8cpp.html" title="UDP client entry point: parses CLI, configures UdpClient, and runs paced sending." alt="" coords="137,79,285,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="159,38,201,76,197,80,156,42"/>
+</map>

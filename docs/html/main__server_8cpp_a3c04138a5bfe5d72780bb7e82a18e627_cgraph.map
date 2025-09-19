@@ -1,0 +1,9 @@
+<map id="main" name="main">
+<area shape="rect" id="Node000001" title="Application entry point: configure, run, and stop the UDP server." alt="" coords="5,55,60,80"/>
+<area shape="rect" id="Node000002" href="$main__server_8cpp.html#ad115d74b80ea087f7702c9e942aeff7d" title=" " alt="" coords="132,5,244,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="59,56,107,39,130,32,132,37,109,45,61,61"/>
+<area shape="rect" id="Node000003" href="$classudp_1_1UdpServer.html#a5dc68251b3ff3a14697ba1dcc7a85c21" title="Start the worker thread (idempotent)." alt="" coords="108,55,268,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="60,65,94,65,94,70,60,70"/>
+<area shape="rect" id="Node000004" href="$classudp_1_1UdpServer.html#a520deda81e72492f3e814dc41a34c2fa" title="Request a graceful shutdown and join the worker thread (idempotent)." alt="" coords="109,104,267,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="61,73,109,89,135,97,133,102,107,94,59,78"/>
+</map>

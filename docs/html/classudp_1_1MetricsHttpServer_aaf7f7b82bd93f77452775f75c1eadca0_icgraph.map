@@ -1,0 +1,5 @@
+<map id="udp::MetricsHttpServer::stop" name="udp::MetricsHttpServer::stop">
+<area shape="rect" id="Node000001" title="Request a graceful shutdown and join the thread (idempotent)." alt="" coords="225,5,397,45"/>
+<area shape="rect" id="Node000002" href="$classudp_1_1MetricsHttpServer.html#a4fadb113d37ba5778d64947214c8a8db" title="Destructor; ensures the background thread is stopped and joined." alt="" coords="5,5,177,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="211,28,177,28,177,23,211,23"/>
+</map>

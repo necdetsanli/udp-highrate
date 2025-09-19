@@ -1,0 +1,5 @@
+<map id="udp::UdpClient::~UdpClient" name="udp::UdpClient::~UdpClient">
+<area shape="rect" id="Node000001" title="Destructor; ensures the worker thread is stopped and joined." alt="" coords="5,5,207,31"/>
+<area shape="rect" id="Node000002" href="$classudp_1_1UdpClient.html#abc4f5ecc0bb0470661fd224b50701eec" title="Request a graceful shutdown and join the worker thread (idempotent)." alt="" coords="255,5,409,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="207,15,241,15,241,21,207,21"/>
+</map>

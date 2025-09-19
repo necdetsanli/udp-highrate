@@ -1,0 +1,3 @@
+<map id="udp::MetricsHttpServer" name="udp::MetricsHttpServer">
+<area shape="rect" id="Node000001" title="Background HTTP endpoint that serves metrics derived from udp::Stats." alt="" coords="5,5,173,131"/>
+</map>

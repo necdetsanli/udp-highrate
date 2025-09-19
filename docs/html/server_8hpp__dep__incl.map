@@ -1,0 +1,7 @@
+<map id="include/udp/server.hpp" name="include/udp/server.hpp">
+<area shape="rect" id="Node000001" title="High&#45;rate UDP server: batch receive, optional echo, runtime metrics." alt="" coords="74,5,243,31"/>
+<area shape="rect" id="Node000002" href="$main__server_8cpp.html" title="UDP server entry point: parses CLI, starts/stops UdpServer, handles signals." alt="" coords="5,79,157,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="138,42,96,80,92,76,134,38"/>
+<area shape="rect" id="Node000003" href="$server_8cpp.html" title="UdpServer implementation: batch recv, optional echo, PPS accounting, and /metrics integration." alt="" coords="181,79,293,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="183,38,226,76,223,80,180,42"/>
+</map>

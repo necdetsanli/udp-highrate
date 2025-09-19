@@ -1,0 +1,7 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$classudp_1_1ISocket.html" title="Abstract socket interface (strategy/port)." alt="" coords="5,31,107,56"/>
+<area shape="rect" id="Node000001" href="$classudp_1_1MockSocket.html" title="In&#45;memory test double for ISocket (no real network I/O)." alt="" coords="155,5,287,31"/>
+<area shape="poly" id="edge1_Node000000_Node000001" title=" " alt="" coords="120,31,154,25,155,31,121,36"/>
+<area shape="rect" id="Node000002" href="$classudp_1_1UdpSocket.html" title="UDP socket implementation using POSIX/Linux syscalls." alt="" coords="159,55,282,80"/>
+<area shape="poly" id="edge2_Node000000_Node000002" title=" " alt="" coords="121,50,160,56,159,61,120,55"/>
+</map>

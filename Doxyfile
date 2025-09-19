@@ -1,0 +1,85 @@
+# ---- Project ----
+
+PROJECT_NAME           = "UDP High-Rate"
+
+OUTPUT_DIRECTORY       = docs
+
+USE_MDFILE_AS_MAINPAGE = README.md
+ 
+# ---- Inputs ----
+
+INPUT                  = include src README.md docs/architecture.md docs/diagrams
+
+FILE_PATTERNS          = *.hpp *.h *.cpp *.md *.puml
+
+RECURSIVE              = YES
+ 
+# ---- HTML out ----
+
+GENERATE_HTML          = YES
+
+HTML_OUTPUT            = html
+
+GENERATE_LATEX         = NO
+
+GENERATE_TREEVIEW      = YES
+ 
+# ---- Extraction policy ----
+
+EXTRACT_ALL            = YES
+
+EXTRACT_PRIVATE        = NO
+
+EXTRACT_STATIC         = YES
+
+HIDE_UNDOC_MEMBERS     = NO
+ 
+# ---- Warnings ----
+
+WARN_AS_ERROR          = NO
+
+WARN_IF_UNDOCUMENTED   = NO
+ 
+# ---- Source browser (opsiyonel) ----
+
+SOURCE_BROWSER         = YES
+
+INLINE_SOURCES         = NO
+
+STRIP_CODE_COMMENTS    = NO
+ 
+# ---- Graphviz / DOT (otomatik diyagramlar) ----
+
+HAVE_DOT               = YES
+
+DOT_IMAGE_FORMAT       = svg
+
+UML_LOOK               = YES
+
+CLASS_GRAPH            = YES
+
+COLLABORATION_GRAPH    = YES
+
+INCLUDE_GRAPH          = YES
+
+INCLUDED_BY_GRAPH      = YES
+
+CALL_GRAPH             = YES
+
+CALLER_GRAPH           = YES
+
+DOT_GRAPH_MAX_NODES    = 150
+ 
+# Büyük projelerde CALL_* grafikleri yavaş olabilir; istersen NO yapabilirsin.
+ 
+# ---- PlantUML (özel diyagramlar için) ----
+
+# PlantUML yüklüyse aşağıdakilerden birini kullan:
+
+PLANTUML_EXECUTABLE    = /usr/bin/plantuml
+
+# Windows veya jar dosyası ile:
+
+# PLANTUML_JAR_PATH    = C:/tools/plantuml/plantuml.jar
+
+ 
