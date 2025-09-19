@@ -1,0 +1,52 @@
+{
+    "title": "UDP High-Rate Server",
+    "panels": [
+      {
+        "type": "stat",
+        "title": "Packets Received",
+        "targets": [
+          {
+            "expr": "udp_packets_received_total"
+          }
+        ]
+      },
+      {
+        "type": "stat",
+        "title": "Packets Sent",
+        "targets": [
+          {
+            "expr": "udp_packets_sent_total"
+          }
+        ]
+      },
+      {
+        "type": "stat",
+        "title": "Unique Clients",
+        "targets": [
+          {
+            "expr": "udp_unique_clients"
+          }
+        ]
+      },
+      {
+        "type": "timeseries",
+        "title": "RX Bytes",
+        "targets": [
+          {
+            "expr": "rate(udp_rx_bytes_total[5s])"
+          }
+        ]
+      },
+      {
+        "type": "timeseries",
+        "title": "TX Bytes",
+        "targets": [
+          {
+            "expr": "rate(udp_tx_bytes_total[5s])"
+          }
+        ]
+      }
+    ],
+    "schemaVersion": 38,
+    "version": 1
+  }
