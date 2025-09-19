@@ -1,0 +1,25 @@
+@startuml
+title Socket Layer
+interface ISocket {
+  + bind(port,reuse): void
+  + connect(ip,port): void
+  + recv_batch(bufs&): int
+  + send_batch(bufs&): int
+  + set_rcvbuf(bytes): void
+  + set_sndbuf(bytes): void
+}
+class UdpSocket {
+  - fd_: int
+  - nonblocking_: bool
+  - use_mmsg_: bool
+  + UdpSocket()
+  + ~UdpSocket()
+  + bind(...): void
+  + connect(...): void
+  + recv_batch(...): int
+  + send_batch(...): int
+  + set_rcvbuf(...): void
+  + set_sndbuf(...): void
+}
+UdpSocket ..|> ISocket
+@enduml

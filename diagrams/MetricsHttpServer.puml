@@ -1,0 +1,19 @@
+@startuml
+title MetricsHttpServer
+class MetricsHttpServer {
+  - thread_: std::thread
+  - running_: std::atomic<bool>
+  - listen_fd_: int
+  - port_: uint16_t
+  - stats_ref_: const Stats*
+  + start(port, stats): void
+  + stop(): void
+  - serve_loop_(): void
+  - render_metrics_(): std::string
+}
+class Stats {
+  + sent/recv/rx_bytes/tx_bytes
+  + unique_clients()
+}
+MetricsHttpServer --> Stats
+@enduml

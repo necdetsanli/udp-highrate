@@ -1,0 +1,45 @@
+@startuml
+title UdpServer
+class UdpServer {
+  - sock_: std::unique_ptr<ISocket>
+  - cfg_: ServerConfig
+  - stats_: Stats
+  - th_: std::thread
+  - running_: std::atomic<bool>
+  - last_rate_pps_: double
+  - metrics_: MetricsHttpServer
+  + UdpServer(sock, cfg)
+  + start(): void
+  + stop(): void
+  + last_rate_pps() const: double
+  + stats() const: const Stats&
+  - run_loop(): void
+}
+class ServerConfig {
+  + port: uint16_t
+  + batch: int
+  + echo: bool
+  + reuseport: bool
+  + verbose: bool
+  + metrics_port: uint16_t
+}
+interface ISocket {
+  + bind(port,reuse): void
+  + recv_batch(bufs&): int
+  + send_batch(bufs&): int
+  + set_rcvbuf(bytes): void
+}
+class MetricsHttpServer {
+  + start(port,stats): void
+  + stop(): void
+}
+class Stats {
+  + inc_recv/inc_sent
+  + add_rx_bytes/add_tx_bytes
+  + unique_clients(): size_t
+}
+UdpServer o-- ServerConfig
+UdpServer --> ISocket
+UdpServer o-- Stats
+UdpServer --> MetricsHttpServer
+@enduml

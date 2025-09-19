@@ -1,0 +1,29 @@
+@startuml
+title Stats & ClientKey
+class Stats {
+  - sent_: atomic<uint64_t>
+  - recv_: atomic<uint64_t>
+  - rx_bytes_: atomic<uint64_t>
+  - tx_bytes_: atomic<uint64_t>
+  - mu_: mutex
+  - clients_: unordered_map<ClientKey,uint64_t,ClientKeyHash>
+  + inc_sent(n): void
+  + inc_recv(n): void
+  + add_rx_bytes(n): void
+  + add_tx_bytes(n): void
+  + note_client(addr,port): void
+  + unique_clients() const: size_t
+  + sent()/recv()/rx_bytes()/tx_bytes() const
+  + to_string() const: string
+}
+class ClientKey {
+  + addr: uint32_t
+  + port: uint16_t
+  + operator==(o) const: bool
+}
+class ClientKeyHash {
+  + operator()(k) const: size_t
+}
+Stats --> ClientKey
+Stats --> ClientKeyHash
+@enduml

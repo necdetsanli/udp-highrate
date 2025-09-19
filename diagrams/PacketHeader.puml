@@ -1,0 +1,12 @@
+@startuml
+title PacketHeader
+class PacketHeader {
+  + seq: uint64_t
+  + send_ts_ns: uint64_t
+  + magic: uint32_t
+}
+note right of PacketHeader
+Serialized into UDP payload.
+Used for sequence tracking and latency.
+end note
+@enduml

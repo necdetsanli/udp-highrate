@@ -1,0 +1,42 @@
+@startuml
+title UdpClient
+class UdpClient {
+  - sock_: std::unique_ptr<ISocket>
+  - cfg_: ClientConfig
+  - stats_: Stats
+  - th_: std::thread
+  - running_: std::atomic<bool>
+  - seq_: uint64_t
+  + UdpClient(sock, cfg)
+  + ~UdpClient()
+  + start(): void
+  + stop(): void
+  + join(): void
+  + stats() const: const Stats&
+  - run_loop(): void
+}
+class ClientConfig {
+  + server_ip: std::string
+  + port: uint16_t
+  + pps: uint64_t
+  + seconds: int
+  + payload: int
+  + batch: int
+  + id: int
+  + verbose: bool
+}
+interface ISocket {
+  + connect(ip,port): void
+  + send_batch(bufs&): int
+  + set_sndbuf(bytes): void
+}
+class Stats {
+  + inc_sent(n): void
+  + add_tx_bytes(n): void
+  + sent(): uint64_t
+  + tx_bytes(): uint64_t
+}
+UdpClient o-- ClientConfig
+UdpClient --> ISocket
+UdpClient o-- Stats
+@enduml
