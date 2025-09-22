@@ -8,6 +8,7 @@ A high-performance UDP server/client in C++17 designed to sustain **≥100 kpps*
 - Optional **Prometheus metrics** → **Grafana** dashboard
 - Docker + docker-compose integration
 - Clean, incremental Git commit plan
+- **Configurable client cap**: server tracks/serves up to a maximum number of distinct clients (default **100**) via `--max-clients`
  
 > Target platform: **Linux (x86_64)**. Uses Linux `recvmmsg/sendmmsg` for batching; falls back to `recvfrom/sendto` if unavailable.
  
@@ -26,8 +27,8 @@ make -j
 ### Run server
  
 ```bash
-# Start server on UDP :9000, metrics on :9100
-./udp_server --port 9000 --metrics-port 9100 --batch 64
+# Start server on UDP :9000, metrics on :9100, allow up to 100 distinct clients
+./udp_server --port 9000 --metrics-port 9100 --batch 64 --max-clients 100
 ```
  
 ### Run 10 clients (each 10 kpps for 5s → ~100 kpps)
@@ -56,7 +57,7 @@ A helper script runs a self-contained demo on loopback:
 ./tools/run_e2e_local.sh
 ```
  
-It builds the project (Release), starts the server, launches **10 clients** for **5 seconds**, and verifies we hit **≥100 kpps** on average. The server also tracks simple counters and (optionally) unique clients.
+It builds the project (Release), starts the server, launches **10 clients** for **5 seconds**, and verifies we hit **≥100 kpps** on average. The server also tracks simple counters and (optionally) unique clients. By default the server permits up to **100** distinct clients, which comfortably covers this scenario.
  
 > ⚠️ Throughput depends on hardware & kernel settings. The script uses loopback and generous defaults, but you may need to tune sysctls (e.g. `rmem_max`, `wmem_max`) for higher rates on real NICs.
  
@@ -89,13 +90,13 @@ Below is a detailed overview of the architecture and interactions. PlantUML `.pu
 ```mermaid
 flowchart LR
   subgraph Client
-    C[UdpClient]\n(batched, paced TX) --> CI[ISocket]
+    C["UdpClient<br/>(batched, paced TX)"] --> CI[ISocket]
   end
  
   subgraph Server
-    SI[ISocket] --> S[UdpServer]\n(batched RX, optional echo)
-    S --> ST[Stats]\n(counters, unique clients)
-    S --> MH[MetricsHttpServer]\n(/metrics HTTP)
+    SI[ISocket] --> S["UdpServer<br/>(batched RX, optional echo)"]
+    S --> ST["Stats<br/>(counters, unique clients)"]
+    S --> MH["MetricsHttpServer<br/>(/metrics HTTP)"]
   end
  
   CI -->|UdpSocket or MockSocket| Net[(UDP/IP)]
@@ -158,6 +159,7 @@ classDiagram
     +bool reuseport
     +bool verbose
     +uint16_t metrics_port
+    +int max_clients
   }
  
   class UdpServer {
@@ -291,7 +293,7 @@ docker build -t udp-highrate:latest -f docker/Dockerfile .
  
 ```bash
 docker run --net=host --rm udp-highrate:latest \
-  /app/bin/udp_server --port 9000 --metrics-port 9100 --batch 64
+  /app/bin/udp_server --port 9000 --metrics-port 9100 --batch 64 --max-clients 100
 ```
  
 **Run client(s)**:
@@ -313,6 +315,7 @@ docker run --net=host --rm udp-highrate:latest \
 --port <u16>           UDP listen port (default 9000)
 --batch <int>          recvmmsg/sendmmsg batch size (default 64)
 --metrics-port <u16>   HTTP metrics port (default 9100, 0=disabled)
+--max-clients <int>    Maximum distinct clients to track/serve (default 100)
 --echo                 Echo back payloads to sender (off by default)
 --reuseport            Enable SO_REUSEPORT for scaling with multiple server procs
 --verbose              Print per-second stats
