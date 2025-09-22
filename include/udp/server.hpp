@@ -2,11 +2,17 @@
 
 #include <vector>
 
+#include <string>
+
+#include <cstdint>
+
 #include <atomic>
 
 #include <thread>
 
 #include <memory>
+
+#include <unordered_set>
 
 #include "udp/socket.hpp"
 
@@ -16,121 +22,97 @@
 
 #include "udp/metrics_http.hpp"
  
-/**
-
-* @file
-
-* @brief High-rate UDP server: batch receive, optional echo, runtime metrics.
-
-*
-
-* This header defines the configuration and the server façade used by the
-
-* executable entry point. The server runs a background thread that:
-
-*  - receives datagrams in batches (preferring `recvmmsg` via @ref ISocket),
-
-*  - updates @ref udp::Stats counters on the hot path using relaxed atomics,
-
-*  - optionally echoes received payloads back to their sender (when enabled),
-
-*  - periodically computes a per-second receive rate (pps) for logging/inspection,
-
-*  - optionally exposes `/metrics` via @ref udp::MetricsHttpServer.
-
-*
-
-* @par Design
-
-* Core logic depends on the @ref ISocket interface (Strategy/Port); a concrete
-
-* adapter such as @ref UdpSocket is injected at construction time (DI). This keeps
-
-* the server testable (with @ref MockSocket) and evolvable (future adapters).
-
-*
-
-* @note Thread-safety: one owner/thread should manage a @ref UdpServer instance.
-
-*       Internally the server owns a worker thread for the I/O loop. Public
-
-*       API is minimal (`start`/`stop`/getters) and not intended for concurrent
-
-*       calls without external synchronization.
-
-*/
- 
 namespace udp {
  
 /**
 
-* @brief Runtime configuration knobs for @ref UdpServer.
+* @brief Server configuration knobs.
 
 *
 
 * @details
 
-* - @ref port : UDP port to bind on the local host (host byte order).
+* - @ref max_clients provides an **admission control** guard: the server will accept
 
-* - @ref batch : Target number of datagrams to process per syscall. Larger values
+*   at most this many distinct clients at a time. A "client" is identified by the
 
-*   reduce syscall overhead (PPS↑) at the cost of slightly higher per-packet latency.
+*   (source IPv4 address, UDP port) pair observed on incoming datagrams.
 
-* - @ref echo : If true, mirror incoming datagrams back to their source address.
+* - When the limit is reached, **packets from previously unseen clients are dropped**,
 
-* - @ref reuseport : If true, attempt to enable `SO_REUSEPORT` (multi-worker setups).
+*   while already admitted clients continue to be served.
 
-* - @ref verbose : If true, log periodic rate/counter lines to stdout.
+*
 
-* - @ref metrics_port : TCP port for `/metrics` endpoint (0 disables HTTP metrics).
+* @note Enforcing admission requires access to the source address. On Linux the
+
+*       implementation uses `recvmmsg` with `msg_name` to capture per-message
+
+*       addresses. In environments where the raw socket fd is not available
+
+*       (e.g., tests with @ref MockSocket) the server falls back to a mode where
+
+*       the limit cannot be enforced, but normal packet handling still works.
 
 */
 
 struct ServerConfig {
 
-    uint16_t port = 9000;      ///< UDP listen port (host order).
+    uint16_t port = 9000;         ///< UDP listen port.
 
-    int      batch = 64;       ///< Batch size hint for recv/send operations.
+    int      batch = 64;          ///< Recv/send batch size hint.
 
-    bool     echo = false;     ///< Echo received payloads back to sender if true.
+    bool     echo = false;        ///< Echo received payloads back to sender.
 
-    bool     reuseport = false;///< Try SO_REUSEPORT for multi-workers if true.
+    bool     reuseport = false;   ///< Request SO_REUSEPORT (if supported).
 
-    bool     verbose = true;   ///< Print periodic stats/rate logs if true.
+    bool     verbose = true;      ///< Print periodic stats.
 
-    uint16_t metrics_port = 9100; ///< HTTP metrics port; 0 = disabled.
+    uint16_t metrics_port = 9100; ///< Loopback HTTP port for /metrics (0 = disabled).
+
+    size_t   max_clients = 100;   ///< **Admission limit**: max distinct (IP:port) clients.
 
 };
  
 /**
 
-* @brief High-rate UDP server using a pluggable @ref ISocket.
+* @brief High-rate UDP server with batch receive, optional echo, metrics, and admission control.
 
 *
 
 * @details
 
-* Lifecycle:
+* Responsibilities:
 
-* - Construct with a concrete @ref ISocket and @ref ServerConfig.
+*  - Bind a UDP socket and run the main receive loop.
 
-* - Call @ref start() to spawn the worker thread and begin receiving.
+*  - Maintain hot-path counters via @ref Stats and compute per-second PPS.
 
-* - Call @ref stop() to request a graceful shutdown and join the thread.
+*  - Optionally echo payloads back to senders.
+
+*  - Expose `/metrics` (Prometheus text) via @ref MetricsHttpServer.
+
+*  - **Admission control:** allow up to @ref ServerConfig::max_clients distinct clients.
 
 *
 
-* Behavior:
+* Admission semantics:
 
-* - The worker @ref run_loop() uses batch I/O to pull datagrams, updates
+*  - A "client" is the observed (IPv4 address, UDP port) of an incoming datagram.
 
-*   @ref Stats, and (optionally) echoes payloads. Once per second it computes
+*  - The first `max_clients` distinct clients are **admitted**.
 
-*   a moving per-second receive rate, exposed via @ref last_rate_pps().
+*  - Packets from any **new** (unseen) client beyond the limit are dropped.
 
-* - If @ref ServerConfig::metrics_port is non-zero, a @ref MetricsHttpServer
+*  - Already-admitted clients are unaffected by later drops.
 
-*   is created and started to expose counters for scraping.
+*
+
+* @note Admission relies on retrieving source addresses from the kernel via
+
+*       `recvmmsg`/`recvfrom`. Where not available (e.g., @ref MockSocket),
+
+*       the server continues to run but cannot enforce the cap.
 
 */
 
@@ -138,109 +120,47 @@ class UdpServer {
 
 public:
 
-    /**
-
-     * @brief Construct the server with a socket strategy and configuration.
-
-     *
-
-     * @param sock Concrete @ref ISocket (e.g., @ref UdpSocket or @ref MockSocket).
-
-     *             Ownership is transferred to the server.
-
-     * @param cfg  Server configuration (port, batch size, echo, metrics, …).
-
-     */
-
     explicit UdpServer(std::unique_ptr<ISocket> sock, ServerConfig cfg);
- 
-    /**
-
-     * @brief Destructor; ensures the worker thread is stopped and joined.
-
-     */
 
     ~UdpServer();
  
-    /**
-
-     * @brief Start the worker thread (idempotent).
-
-     *
-
-     * If already running, additional calls are no-ops.
-
-     */
+    /// @brief Start worker thread (and metrics if configured).
 
     void start();
  
-    /**
-
-     * @brief Request a graceful shutdown and join the worker thread (idempotent).
-
-     *
-
-     * Safe to call multiple times; returns after the background thread exits.
-
-     */
+    /// @brief Request stop and join worker thread; stop metrics.
 
     void stop();
  
-    /**
-
-     * @brief Last computed receive rate in packets per second.
-
-     *
-
-     * @return The most recent one-second pps estimate (may be 0 before the first tick).
-
-     */
+    /// @brief Last computed packets-per-second (1s window).
 
     double last_rate_pps() const { return last_rate_pps_; }
  
-    /**
-
-     * @brief Read-only access to cumulative counters.
-
-     *
-
-     * @return Const reference to internal @ref Stats.
-
-     */
+    /// @brief Read-only access to cumulative stats.
 
     const Stats& stats() const { return stats_; }
  
 private:
 
-    /**
-
-     * @brief Background I/O loop: batch receive, optional echo, rate computation.
-
-     *
-
-     * Runs while @ref running_ is true. Updates @ref stats_ on the hot path and
-
-     * refreshes @ref last_rate_pps_ once per second. Errors are handled by retrying
-
-     * or breaking the loop depending on severity.
-
-     */
-
     void run_loop();
  
-    std::unique_ptr<ISocket> sock_;   ///< Injected socket strategy (owned).
+    std::unique_ptr<ISocket> sock_;
 
-    ServerConfig             cfg_;    ///< Immutable server configuration copy.
+    ServerConfig             cfg_;
 
-    Stats                    stats_;  ///< Hot-path counters (relaxed atomics) + unique clients.
+    Stats                    stats_;
 
-    std::unique_ptr<MetricsHttpServer> metrics_; ///< Optional `/metrics` HTTP server.
+    std::unique_ptr<MetricsHttpServer> metrics_;
 
-    std::thread              th_;     ///< Worker thread running @ref run_loop().
+    std::thread              th_;
 
-    std::atomic<bool>        running_{false}; ///< Run flag observed by @ref run_loop().
+    std::atomic<bool>        running_{false};
 
-    double                   last_rate_pps_{0.0}; ///< Last 1-second receive rate (pps).
+    double                   last_rate_pps_{0.0};
+ 
+    // Admission set: distinct clients currently admitted (IP:port in host order).
+
+    std::unordered_set<ClientKey, ClientKeyHash> admitted_;
 
 };
  
