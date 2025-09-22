@@ -28,6 +28,8 @@
 
 *  - `--metrics-port <p>`   : Loopback HTTP port for /metrics (0 disables; default: 9100).
 
+*  - `--max-clients <n>`    : **Admission cap** for distinct clients (default: 100).
+
 *  - `--echo`               : Echo received packets back to the sender.
 
 *  - `--reuseport`          : Request SO_REUSEPORT (if supported by the platform).
@@ -69,106 +71,68 @@
 #include <atomic>
 
 #include <csignal>
+
+#include <cstdlib>  // for strtoull
  
 using namespace udp;
  
-/**
-
-* @var g_keepRunning
-
-* @brief Global run flag toggled by signal handlers to request graceful shutdown.
-
-*
-
-* @details
-
-* Initialized to `true` and polled by `main` while idling. When a termination
-
-* signal arrives, the handler sets this to `false`, causing the main loop to exit.
-
-*/
+// Global flag toggled by signal handlers to stop the server gracefully.
 
 static std::atomic<bool> g_keepRunning{true};
  
-/**
-
-* @brief Signal handler for SIGINT/SIGTERM; requests graceful shutdown.
-
-* @param /*signum*/ Unused signal number.
-
-*
-
-* @note The handler is async-signal-safe here because it only writes to an
-
-*       `std::atomic<bool>` (lock-free); no I/O or allocation is performed.
-
-*/
-
 static void handle_signal(int) {
 
     g_keepRunning = false;
 
 }
  
-/**
-
-* @brief Application entry point: configure, run, and stop the UDP server.
-
-* @param argc Argument count.
-
-* @param argv Argument vector.
-
-* @return 0 on success; 1 on error.
-
-*
-
-* @details
-
-* Steps:
-
-*  1. Parse CLI options into @ref udp::ServerConfig.
-
-*  2. Create a @ref udp::UdpSocket and pass it (via unique_ptr) to @ref udp::UdpServer.
-
-*  3. Start the server and install signal handlers (SIGINT/SIGTERM).
-
-*  4. Idle in a 1-second sleep loop until a termination signal arrives.
-
-*  5. Stop the server and return success.
-
-*
-
-* Error handling:
-
-*  - Any exception thrown during construction, binding, or runtime is caught,
-
-*    printed to `stderr`, and results in exit code 1.
-
-*/
-
 int main(int argc, char** argv) {
 
     ServerConfig cfg;
 
     for (int i = 1; i < argc; i++) {
 
-        if (!std::strcmp(argv[i], "--port") && i + 1 < argc) cfg.port = static_cast<uint16_t>(std::atoi(argv[++i]));
+        if (!std::strcmp(argv[i], "--port") && i + 1 < argc) {
 
-        else if (!std::strcmp(argv[i], "--batch") && i + 1 < argc) cfg.batch = std::atoi(argv[++i]);
+            cfg.port = static_cast<uint16_t>(std::atoi(argv[++i]));
 
-        else if (!std::strcmp(argv[i], "--metrics-port") && i + 1 < argc) cfg.metrics_port = static_cast<uint16_t>(std::atoi(argv[++i]));
+        } else if (!std::strcmp(argv[i], "--batch") && i + 1 < argc) {
 
-        else if (!std::strcmp(argv[i], "--echo")) cfg.echo = true;
+            cfg.batch = std::atoi(argv[++i]);
 
-        else if (!std::strcmp(argv[i], "--reuseport")) cfg.reuseport = true;
+        } else if (!std::strcmp(argv[i], "--metrics-port") && i + 1 < argc) {
 
-        else if (!std::strcmp(argv[i], "--verbose")) cfg.verbose = true;
+            cfg.metrics_port = static_cast<uint16_t>(std::atoi(argv[++i]));
 
-        else if (!std::strcmp(argv[i], "--quiet")) cfg.verbose = false;
+        } else if (!std::strcmp(argv[i], "--max-clients") && i + 1 < argc) {
 
-        else if (!std::strcmp(argv[i], "--help")) {
+            cfg.max_clients = static_cast<size_t>(std::strtoull(argv[++i], nullptr, 10));
 
-            std::cout << "udp_server --port <p> --batch <n> --metrics-port <p> [--echo] [--reuseport] [--verbose|--quiet]\n";
+        } else if (!std::strcmp(argv[i], "--echo")) {
+
+            cfg.echo = true;
+
+        } else if (!std::strcmp(argv[i], "--reuseport")) {
+
+            cfg.reuseport = true;
+
+        } else if (!std::strcmp(argv[i], "--verbose")) {
+
+            cfg.verbose = true;
+
+        } else if (!std::strcmp(argv[i], "--quiet")) {
+
+            cfg.verbose = false;
+
+        } else if (!std::strcmp(argv[i], "--help")) {
+
+            std::cout
+<< "udp_server "
+<< "--port <p> "
+<< "--batch <n> "
+<< "--metrics-port <p> "
+<< "--max-clients <n> "
+<< "[--echo] [--reuseport] [--verbose|--quiet]\n";
 
             return 0;
 
