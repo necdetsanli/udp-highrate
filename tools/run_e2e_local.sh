@@ -10,12 +10,18 @@ make -j
 popd >/dev/null
  
 # Start server in background and capture its PID
-"$BUILD/udp_server" --port 9000 --metrics-port 9100 --batch 64 --verbose --echo &
+"$BUILD/udp_server" \
+  --port 9000 \
+  --metrics-port 9100 \
+  --batch 64 \
+  --max-clients 100 \
+  --verbose \
+  --echo &
 SRV_PID=$!
-echo "[E2E] server started (pid=$SRV_PID) on UDP :9000, metrics :9100"
+echo "[E2E] server started (pid=$SRV_PID) on UDP :9000, metrics :9100, max-clients=100"
 sleep 0.5
  
-# Launch clients and collect their PIDs
+# Launch clients and collect their PIDs (log each launch; use --verbose)
 PIDS=()
 for i in $(seq 1 10); do
   echo "[E2E] launching client $i..."
@@ -35,7 +41,6 @@ done
  
 # Wait only for clients to finish
 for p in "${PIDS[@]}"; do
-  # If a client exits non-zero, print a warning but keep going
   if ! wait "$p"; then
     echo "[E2E] WARNING: client process (pid=$p) exited with non-zero status"
   fi
