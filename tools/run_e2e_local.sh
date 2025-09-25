@@ -12,18 +12,33 @@ popd >/dev/null
 # Start server in background and capture its PID
 "$BUILD/udp_server" --port 9000 --metrics-port 9100 --batch 64 --verbose --echo &
 SRV_PID=$!
+echo "[E2E] server started (pid=$SRV_PID) on UDP :9000, metrics :9100"
 sleep 0.5
  
 # Launch clients and collect their PIDs
 PIDS=()
 for i in $(seq 1 10); do
-  "$BUILD/udp_client" --server 127.0.0.1 --port 9000 --pps 10000 --seconds 5 --payload 64 --batch 64 --id $i &
-  PIDS+=($!)
+  echo "[E2E] launching client $i..."
+  "$BUILD/udp_client" \
+    --server 127.0.0.1 \
+    --port 9000 \
+    --pps 10000 \
+    --seconds 5 \
+    --payload 64 \
+    --batch 64 \
+    --id "$i" \
+    --verbose &
+  pid=$!
+  PIDS+=("$pid")
+  echo "[E2E] client $i started (pid=$pid)"
 done
  
 # Wait only for clients to finish
 for p in "${PIDS[@]}"; do
-  wait "$p"
+  # If a client exits non-zero, print a warning but keep going
+  if ! wait "$p"; then
+    echo "[E2E] WARNING: client process (pid=$p) exited with non-zero status"
+  fi
 done
  
 # Give server a moment to print final stats, then terminate it
@@ -42,5 +57,3 @@ if kill -0 "$SRV_PID" 2>/dev/null; then
 fi
  
 echo "[E2E] Completed. Check server output above for sustained rate >= 100 kpps."
- 
- 
