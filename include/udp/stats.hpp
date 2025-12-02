@@ -76,15 +76,16 @@ struct ClientKeyHash {
 * Reads of different counters are not atomic as a group; a single @ref to_string
 * call may reflect slightly different instants per counter. This is generally fine
 * for diagnostics and metrics.
-*
-* @code
-* udp::Stats s;
-* s.inc_recv(64);
-* s.add_rx_bytes(64 * 128);
-* s.note_client(0x7f000001 /*127.0.0.1*/, 9000);
-* std::string line = s.to_string(); // "recv=64 sent=0 unique_clients=1 rx_bytes=8192 tx_bytes=0"
-* @endcode
-*/
+/**
+ * @code{.cpp}
+ * Stats s;
+ * s.inc_recv(64);
+ * // 0x7f000001 == 127.0.0.1
+ * s.note_client(0x7f000001, 9000);
+ * std::string line = s.to_string(); // "recv=64 sent=0 unique_clients=1 rx_bytes=8192 tx_bytes=0"
+ * @endcode
+ */
+
 class Stats {
 public:
     /**
