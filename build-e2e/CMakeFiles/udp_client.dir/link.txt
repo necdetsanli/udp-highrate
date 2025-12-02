@@ -1,0 +1,1 @@
+/usr/bin/c++ -O3 -DNDEBUG CMakeFiles/udp_client.dir/src/main_client.cpp.o -o udp_client  libudp_lib.a 

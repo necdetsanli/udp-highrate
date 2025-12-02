@@ -1,0 +1,1 @@
+/usr/bin/c++ -O3 -DNDEBUG CMakeFiles/udp_server.dir/src/main_server.cpp.o -o udp_server  libudp_lib.a 

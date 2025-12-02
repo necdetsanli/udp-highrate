@@ -1,0 +1,2 @@
+/usr/bin/ar qc libudp_lib.a CMakeFiles/udp_lib.dir/src/socket.cpp.o CMakeFiles/udp_lib.dir/src/stats.cpp.o CMakeFiles/udp_lib.dir/src/metrics_http.cpp.o CMakeFiles/udp_lib.dir/src/server.cpp.o CMakeFiles/udp_lib.dir/src/client.cpp.o
+/usr/bin/ranlib libudp_lib.a

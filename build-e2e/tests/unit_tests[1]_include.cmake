@@ -1,0 +1,5 @@
+if(EXISTS "/home/necdetsanli/udp-highrate/build-e2e/tests/unit_tests[1]_tests.cmake")
+  include("/home/necdetsanli/udp-highrate/build-e2e/tests/unit_tests[1]_tests.cmake")
+else()
+  add_test(unit_tests_NOT_BUILT unit_tests_NOT_BUILT)
+endif()
