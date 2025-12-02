@@ -1,0 +1,65 @@
+# --- VCS / Metadata ---
+.git
+.github/
+.gitignore
+
+# --- Build trees ---
+build/
+build-*/
+_build/
+out/
+bin/
+lib/
+dist/
+install/
+_deps/
+
+# Local build trees created by scripts
+build-e2e/
+build-cov/
+build-sysgtest/
+
+# --- CMake artifacts ---
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestTestfile.cmake
+Testing/
+Makefile
+install_manifest.txt
+compile_commands.json
+
+# --- Coverage artifacts ---
+*.gcno
+*.gcda
+*.gcov
+coverage.info
+coverage-html/
+
+# --- Doxygen generated output (keep sources under docs/ & diagrams/) ---
+docs/html/
+docs/latex/
+
+# --- Logs / temp ---
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# --- OS cruft ---
+.DS_Store
+Thumbs.db
+
+# --- IDE / Editor ---
+.vscode/
+.idea/
+*.code-workspace
+
+# --- Archives (optional) ---
+*.zip
+*.tar
+*.tar.gz
+
+# --- Optional: ignore tests to slim context (uncomment if not building tests in image) ---
+# tests/
