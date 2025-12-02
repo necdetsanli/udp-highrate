@@ -43,6 +43,7 @@ jobs:
             build-essential cmake ninja-build lcov doxygen graphviz plantuml ccache
 
       - name: Setup ccache
+        if: matrix.coverage != true
         uses: hendrikmuhs/ccache-action@v1
         with:
           key: ${{ runner.os }}-${{ matrix.compiler }}-${{ matrix.build_type }}
@@ -74,8 +75,11 @@ jobs:
         if: matrix.coverage == true
         run: |
           pushd "$BUILD_DIR"
-          lcov --capture --directory . --output-file coverage.info
-          lcov --remove coverage.info '/usr/*' '*/tests/*' --output-file coverage.info
+          lcov --capture --directory . --output-file coverage.info \
+               --rc geninfo_unexecuted_blocks=1 \
+               --ignore-errors mismatch
+          lcov --remove coverage.info '/usr/*' '*/_deps/*' '*/tests/*' \
+               --output-file coverage.info
           lcov --summary coverage.info
           genhtml coverage.info --output-directory coverage-html
           popd
