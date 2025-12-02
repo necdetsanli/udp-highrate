@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: read
+  packages: write
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -26,13 +27,10 @@ jobs:
         compiler: [gcc, clang]
         build_type: [Release, Debug]
         include:
-          # Coverage only GCC/Debug
           - compiler: gcc
             build_type: Debug
             coverage: true
     env:
-      CC: ${{ matrix.compiler == 'clang' && 'clang' || 'gcc' }}
-      CXX: ${{ matrix.compiler == 'clang' && 'clang++' || 'g++' }}
       BUILD_DIR: build-${{ matrix.compiler }}-${{ matrix.build_type }}
     steps:
       - name: Checkout
@@ -41,21 +39,30 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake ninja-build \
-            build-essential lcov doxygen graphviz \
-            plantuml ccache
+          sudo apt-get install -y \
+            build-essential cmake ninja-build lcov doxygen graphviz plantuml ccache
 
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@v1
         with:
           key: ${{ runner.os }}-${{ matrix.compiler }}-${{ matrix.build_type }}
 
+      - name: Select compiler
+        run: |
+          if [ "${{ matrix.compiler }}" = "clang" ]; then
+            echo "CC=clang"   >> $GITHUB_ENV
+            echo "CXX=clang++" >> $GITHUB_ENV
+          else
+            echo "CC=gcc"     >> $GITHUB_ENV
+            echo "CXX=g++"    >> $GITHUB_ENV
+          fi
+
       - name: Configure
         run: |
           cmake -S . -B "$BUILD_DIR" \
             -G Ninja \
             -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-            -DENABLE_COVERAGE=${{ matrix.coverage == 'true' && 'ON' || 'OFF' }}
+            -DENABLE_COVERAGE=${{ matrix.coverage == true && 'ON' || 'OFF' }}
 
       - name: Build
         run: cmake --build "$BUILD_DIR" -j
@@ -64,7 +71,7 @@ jobs:
         run: ctest --test-dir "$BUILD_DIR" --output-on-failure
 
       - name: Coverage (LCOV)
-        if: matrix.coverage == 'true'
+        if: matrix.coverage == true
         run: |
           pushd "$BUILD_DIR"
           lcov --capture --directory . --output-file coverage.info
@@ -72,8 +79,9 @@ jobs:
           lcov --summary coverage.info
           genhtml coverage.info --output-directory coverage-html
           popd
+
       - name: Upload coverage artifact
-        if: matrix.coverage == 'true'
+        if: matrix.coverage == true
         uses: actions/upload-artifact@v4
         with:
           name: coverage-${{ matrix.compiler }}-${{ matrix.build_type }}
@@ -82,7 +90,7 @@ jobs:
             ${{ env.BUILD_DIR }}/coverage-html
 
   docs:
-    name: Doxygen Docs
+    name: Doxygen Docs → Pages
     runs-on: ubuntu-latest
     needs: build-and-test
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -96,16 +104,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Install doxygen stack
         run: |
           sudo apt-get update
           sudo apt-get install -y doxygen graphviz plantuml
+
       - name: Generate docs
         run: doxygen Doxyfile
+
+      - name: Disable Jekyll on Pages
+        run: touch docs/html/.nojekyll
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: docs/html
+
       - name: Deploy to GitHub Pages
         id: deploy
         uses: actions/deploy-pages@v4
@@ -137,6 +152,7 @@ jobs:
 
       - name: Compute tags
         id: meta
+        shell: bash
         run: |
           IMAGE="ghcr.io/${{ github.repository }}"
           IMAGE=${IMAGE,,} # lowercase
@@ -146,6 +162,7 @@ jobs:
           else
             echo "tags=${IMAGE}:ci-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
           fi
+
       - name: Build (and push if tag)
         uses: docker/build-push-action@v6
         with:
