@@ -399,6 +399,11 @@ xdg-open docs/html/index.html  # or: open docs/html/index.html (macOS)
 ```
 .
 ├─ CMakeLists.txt
+├─ Doxyfile
+├─ .gitignore
+├─ .dockerignore
+├─ README.md
+├─ LICENSE
 ├─ include/udp/*.hpp
 ├─ src/*.cpp
 ├─ tests/*.cpp
@@ -409,7 +414,9 @@ xdg-open docs/html/index.html  # or: open docs/html/index.html (macOS)
 │  └─ prom/{prometheus.yml,grafana_dashboard.json}
 ├─ diagrams/*.puml
 ├─ docker/{Dockerfile,docker-compose.yml}
-└─ docs/ (Doxygen output)
+└─ docs/            # Doxygen input (sources) and html/ output (generated)
+   └─ html/         # Generated site (ignored by .gitignore/.dockerignore)
+
 ```
  
 ---
