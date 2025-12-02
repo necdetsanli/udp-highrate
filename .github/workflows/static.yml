@@ -1,0 +1,58 @@
+# .github/workflows/pages.yml
+name: Build & Deploy Doxygen to GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build docs (Doxygen)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Doxygen & Graphviz (and PlantUML optional)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y doxygen graphviz
+          # PlantUML only if you actually invoke it from Doxygen:
+          # sudo apt-get install -y plantuml
+
+      - name: Generate docs with Doxygen
+        run: |
+          doxygen Doxyfile
+          # Ensure Jekyll is disabled so GitHub Pages doesn't mangle Doxygen output
+          touch docs/html/.nojekyll
+          # Optional: set a CNAME if you use a custom domain
+          # echo "docs.example.com" > docs/html/CNAME
+
+      - name: Upload artifact (docs/html)
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/html
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
