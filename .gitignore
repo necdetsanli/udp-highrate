@@ -1,0 +1,58 @@
+# --- CMake build dirs ---
+/build/
+/build-*/
+/_build/
+/out/
+/bin/
+/lib/
+/dist/
+/install/
+
+# Local build trees created by scripts
+/build-e2e/
+/build-cov/
+/build-sysgtest/
+
+# CMake artifacts
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestTestfile.cmake
+Testing/
+Makefile
+install_manifest.txt
+compile_commands.json
+
+# Dependencies fetched by CMake/FetchContent
+/_deps/
+
+# Coverage artifacts
+*.gcno
+*.gcda
+*.gcov
+coverage.info
+/coverage-html/
+
+# Doxygen generated docs
+/docs/html/
+/docs/latex/
+
+# Logs & temp
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# IDE/editor
+.vscode/
+.idea/
+*.code-workspace
+
+# Python cache (if any tooling scripts)
+__pycache__/
+*.pyc
